@@ -12,6 +12,7 @@
 - [x] 音频响度匹配
 - [x] 音频数据统计（支持判断音频长度）
 - [x] 音频重采样
+- [x] 音频打标 (.lab)
 
 ([ ] 表示未完成, [x] 表示已完成)
 
@@ -23,3 +24,8 @@
 pip install -e . 
 fap --help
 ```
+
+## 引用
+
+- [Batch Whisper](https://github.com/Blair-Johnson/batch-whisper)
+

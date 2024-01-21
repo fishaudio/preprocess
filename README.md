@@ -12,6 +12,7 @@ This repo contains some scripts for audio processing. Main features include:
 - [x] Audio loudness matching
 - [x] Audio data statistics (supports determining audio length)
 - [x] Audio resampling
+- [x] Audio transcribe (.lab)
 
 ([ ] indicates not completed, [x] indicates completed)
 
@@ -23,3 +24,8 @@ This repo contains some scripts for audio processing. Main features include:
 pip install -e . 
 fap --help
 ```
+
+## Reference
+
+- [Batch Whisper](https://github.com/Blair-Johnson/batch-whisper)
+

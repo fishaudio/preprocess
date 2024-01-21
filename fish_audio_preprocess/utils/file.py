@@ -31,6 +31,11 @@ AUDIO_EXTENSIONS = {
 }
 
 
+def split_list(lst, n):
+    k, m = divmod(len(lst), n)
+    return [lst[i * k + min(i, m) : (i + 1) * k + min(i + 1, m)] for i in range(n)]
+
+
 def list_files(
     path: Union[Path, str],
     extensions: set[str] = None,

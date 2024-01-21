@@ -9,6 +9,7 @@ from .loudness_norm import loudness_norm
 from .resample import resample
 from .separate_audio import separate
 from .slice_audio import slice_audio, slice_audio_v2
+from .transcribe import transcribe
 
 
 @click.group()
@@ -31,6 +32,7 @@ cli.add_command(loudness_norm)
 cli.add_command(slice_audio)
 cli.add_command(slice_audio_v2)
 cli.add_command(resample)
+cli.add_command(transcribe)
 
 
 if __name__ == "__main__":
