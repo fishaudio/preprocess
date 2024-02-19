@@ -1,6 +1,5 @@
 from pathlib import Path
 
-import whisper
 from tqdm import tqdm
 
 PROMPT = {
@@ -11,6 +10,8 @@ PROMPT = {
 
 
 def batch_transcribe(files: list[Path], model_size: str, lang: str, pos: int):
+    import whisper
+
     model = whisper.load_model(model_size)
     results = {}
     for file in tqdm(files, position=pos):

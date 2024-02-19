@@ -195,6 +195,14 @@ def slice_audio(
     show_default=True,
     type=float,
 )
+@click.option(
+    "--flat-layout/--no-flat-layout", default=False, help="Use flat directory structure"
+)
+@click.option(
+    "--merge-short/--no-merge-short",
+    default=False,
+    help="Merge short slices automatically",
+)
 def slice_audio_v2(
     input_dir: str,
     output_dir: str,
@@ -208,12 +216,20 @@ def slice_audio_v2(
     top_db: int,
     hop_length: int,
     max_silence_kept: float,
+    flat_layout: bool,
+    merge_short: bool,
 ):
     """(OpenVPI version) Slice audio files into smaller chunks by silence."""
 
     from fish_audio_preprocess.utils.slice_audio_v2 import slice_audio_file_v2
 
     input_dir, output_dir = Path(input_dir), Path(output_dir)
+
+    if flat_layout:
+        logger.info("Using flat directory structure")
+
+    if merge_short:
+        logger.info("Merging short slices automatically")
 
     if input_dir == output_dir and clean:
         logger.error("You are trying to clean the input directory, aborting")
@@ -238,8 +254,16 @@ def slice_audio_v2(
                 skipped += 1
                 continue
 
-            if save_path.exists() is False:
-                save_path.mkdir(parents=True)
+            if (
+                output_dir / relative_path.parent / relative_path.stem
+                if not flat_layout
+                else output_dir / relative_path.parent
+            ).exists() is False:
+                (
+                    output_dir / relative_path.parent / relative_path.stem
+                    if not flat_layout
+                    else output_dir / relative_path.parent
+                ).mkdir(parents=True)
 
             tasks.append(
                 executor.submit(
@@ -252,6 +276,8 @@ def slice_audio_v2(
                     top_db=top_db,
                     hop_length=hop_length,
                     max_silence_kept=max_silence_kept,
+                    flat_layout=flat_layout,
+                    merge_short=merge_short,
                 )
             )
 

@@ -6,6 +6,7 @@ from .convert_to_wav import to_wav
 from .frequency import frequency
 from .length import length
 from .loudness_norm import loudness_norm
+from .merge_short import merge_short
 from .resample import resample
 from .separate_audio import separate
 from .slice_audio import slice_audio, slice_audio_v2
@@ -33,6 +34,7 @@ cli.add_command(slice_audio)
 cli.add_command(slice_audio_v2)
 cli.add_command(resample)
 cli.add_command(transcribe)
+cli.add_command(merge_short)
 
 
 if __name__ == "__main__":

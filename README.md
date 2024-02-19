@@ -13,6 +13,7 @@ This repo contains some scripts for audio processing. Main features include:
 - [x] Audio data statistics (supports determining audio length)
 - [x] Audio resampling
 - [x] Audio transcribe (.lab)
+- [ ] Audio transcribe via WhisperX
 
 ([ ] indicates not completed, [x] indicates completed)
 

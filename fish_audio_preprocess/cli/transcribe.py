@@ -1,5 +1,5 @@
+import multiprocessing as mp
 from concurrent.futures import ProcessPoolExecutor
-from typing import Union
 
 import click
 import torch
@@ -46,6 +46,7 @@ def transcribe(input_dir, num_workers, lang, model_size):
             "CUDA is not available, using CPU. This will be slow and even this script can not work. "
             "To speed up, use a GPU enabled machine or install torch with cuda builtin."
         )
+
     logger.info(f"Transcribing audio files in {input_dir}")
     # 扫描出所有的音频文件
     audio_files = list_files(input_dir)
@@ -58,7 +59,7 @@ def transcribe(input_dir, num_workers, lang, model_size):
     # 按照 num workers 切块
     chunks = split_list(audio_files, num_workers)
 
-    with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(mp_context=mp.get_context("spawn")) as executor:
         tasks = []
         for chunk in chunks:
             tasks.append(
