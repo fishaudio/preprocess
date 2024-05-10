@@ -19,7 +19,7 @@ license = {text = "Apache"}
 name = "fish-audio-preprocess"
 readme = "README.md"
 requires-python = ">=3.9"
-version = "0.2.6"
+version = "0.2.8"
 
 [project.scripts]
 fap = "fish_audio_preprocess.cli.__main__:cli"

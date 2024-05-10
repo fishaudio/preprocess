@@ -1,4 +1,5 @@
-from concurrent.futures import ProcessPoolExecutor
+from functools import partial
+from multiprocessing import Pool
 from pathlib import Path
 from typing import Optional
 
@@ -11,7 +12,13 @@ from fish_audio_preprocess.utils.file import AUDIO_EXTENSIONS, list_files
 
 def process_one(file, input_dir):
     import soundfile as sf
-    sound = sf.SoundFile(str(file))
+
+    try:
+        sound = sf.SoundFile(str(file))
+    except Exception as e:
+        logger.warning(f"Error reading {file}: {e}")
+        return None
+
     return (
         len(sound),
         sound.samplerate,
@@ -20,11 +27,27 @@ def process_one(file, input_dir):
     )
 
 
+def process_one_accurate(file, input_dir):
+    import torchaudio
+
+    try:
+        y, sr = torchaudio.load(str(file), backend="sox")
+        return y.size(-1), sr, y.size(-1) / sr, file.relative_to(input_dir)
+    except Exception as e:
+        logger.warning(f"Error reading {file}: {e}")
+        return None
+
+
 @click.command()
 @click.argument("input_dir", type=click.Path(exists=True, file_okay=False))
 @click.option("--recursive/--no-recursive", default=True, help="Search recursively")
 @click.option(
     "--visualize/--no-visualize", default=False, help="Visualize the distribution"
+)
+@click.option(
+    "--accurate/--no-accurate",
+    default=False,
+    help="Use accurate mode for duration calculation",
 )
 @click.option(
     "-l", "--long-threshold", default=None, type=float, help="Threshold for long files"
@@ -36,30 +59,46 @@ def process_one(file, input_dir):
     type=float,
     help="Threshold for short files",
 )
+@click.option(
+    "-w",
+    "--num-workers",
+    default=10,
+    type=int,
+    help="Number of workers for parallel processing",
+)
 def length(
     input_dir: str,
     recursive: bool,
     visualize: bool,
+    accurate: bool,
     long_threshold: Optional[float],
     short_threshold: Optional[float],
+    num_workers: int,
 ):
     """
     Get the length of all audio files in a directory
     """
-    import soundfile as sf
     from matplotlib import pyplot as plt
+
     input_dir = Path(input_dir)
     files = list_files(input_dir, AUDIO_EXTENSIONS, recursive=recursive)
     logger.info(f"Found {len(files)} files, calculating length")
 
     infos = []
+    process_one_partial = partial(
+        process_one_accurate if accurate else process_one, input_dir=input_dir
+    )
 
-    with ProcessPoolExecutor(max_workers=10) as executor:
-        tasks = []
-        for file in tqdm(files, desc="Preparing"):
-            tasks.append(executor.submit(process_one, file, input_dir))
-        for task in tqdm(tasks, desc="Processing"):
-            infos.append(task.result())
+    with Pool(processes=num_workers) as executor:
+        for res in tqdm(
+            executor.imap_unordered(process_one_partial, files),
+            total=len(files),
+            desc="Processing",
+        ):
+            if res is None:
+                continue
+
+            infos.append(res)
 
     # Duration
     total_duration = sum(i[2] for i in infos)

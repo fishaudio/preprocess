@@ -17,7 +17,7 @@ def merge_short_chunks(chunks, max_duration, rate):
     for chunk in chunks:
         if length + len(chunk) > max_duration * rate and len(buffer) > 0:
             merged_chunks.append(np.concatenate(buffer))
-            buffer, length = [], 0
+            buffer, length = [chunk], 0
         else:
             buffer.append(chunk)
             length += len(chunk)
