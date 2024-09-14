@@ -1,3 +1,4 @@
+import traceback
 from pathlib import Path
 from typing import Union
 
@@ -5,11 +6,10 @@ import numpy as np
 import pyloudnorm as pyln
 import soundfile as sf
 from loguru import logger
-import traceback
 
 
 def loudness_norm(
-        audio: np.ndarray, rate: int, peak=-1.0, loudness=-23.0, block_size=0.400
+    audio: np.ndarray, rate: int, peak=-1.0, loudness=-23.0, block_size=0.400
 ) -> np.ndarray:
     """
     Perform loudness normalization (ITU-R BS.1770-4) on audio files.
@@ -35,7 +35,9 @@ def loudness_norm(
     return pyln.normalize.loudness(audio, _loudness, loudness)
 
 
-def loudness_norm_file(input_file, output_file, peak=-1.0, loudness=-23.0, block_size=0.400):
+def loudness_norm_file(
+    input_file, output_file, peak=-1.0, loudness=-23.0, block_size=0.400
+):
     try:
         audio, rate = sf.read(str(input_file))
         meter = pyln.Meter(rate)
@@ -47,10 +49,14 @@ def loudness_norm_file(input_file, output_file, peak=-1.0, loudness=-23.0, block
 
         # ファイルを小さなチャンクに分割して書き込む
         chunk_size = 100000  # チャンクサイズを調整する必要があるかもしれません
-        with sf.SoundFile(output_file, 'w', samplerate=rate,
-                          channels=audio.shape[1] if len(audio.shape) > 1 else 1) as f:
+        with sf.SoundFile(
+            output_file,
+            "w",
+            samplerate=rate,
+            channels=audio.shape[1] if len(audio.shape) > 1 else 1,
+        ) as f:
             for i in range(0, len(audio), chunk_size):
-                chunk = audio[i:i + chunk_size]
+                chunk = audio[i : i + chunk_size]
                 f.write(chunk)
 
     except Exception as e:
