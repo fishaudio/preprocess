@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 from typing import Literal
 
 from loguru import logger
@@ -19,10 +20,12 @@ def batch_transcribe(
     model_type: ASRModelType,
     lang: str,
     pos: int,
+    compute_type: str,
+    batch_size: int = 1,
 ):
     results = {}
     if model_type == "whisper":
-        import whisper
+        from faster_whisper import WhisperModel
 
         if lang == "jp":
             lang = "ja"
@@ -31,36 +34,51 @@ def batch_transcribe(
             )
 
         logger.info(f"Loading {model_size} model for {lang} transcription")
-        model = whisper.load_model(model_size)
+        kwargs = {}
+        if not batch_size or batch_size == 1:
+            model = WhisperModel(model_size, compute_type=compute_type)
+        else:
+            from faster_whisper.transcribe import BatchedInferencePipeline
+
+            model = BatchedInferencePipeline(model_size, compute_type=compute_type)
+            kwargs["batch_size"] = batch_size
         for file in tqdm(files, position=pos):
             if lang in PROMPT:
                 result = model.transcribe(
-                    file, language=lang, initial_prompt=PROMPT[lang]
+                    file, language=lang, initial_prompt=PROMPT[lang], **kwargs
                 )
             else:
-                result = model.transcribe(file, language=lang)
+                result = model.transcribe(file, language=lang, **kwargs)
+            result = list(result)
             results[str(file)] = result["text"]
     elif model_type == "funasr":
         from funasr import AutoModel
+        from funasr.utils.postprocess_utils import rich_transcription_postprocess
 
         logger.info(f"Loading {model_size} model for {lang} transcription")
         model = AutoModel(
             model=model_size,
             vad_model="fsmn-vad",
-            punc_model="ct-punc",
+            punc_model="ct-punc" if model_size == "paraformer-zh" else None,
             log_level="ERROR",
             disable_pbar=True,
         )
         for file in tqdm(files, position=pos):
             if lang in PROMPT:
                 result = model.generate(
-                    input=file, batch_size_s=300, hotword=PROMPT[lang]
+                    input=file,
+                    batch_size_s=300,
+                    hotword=PROMPT[lang],
+                    merge_vad=True,
+                    merge_length_s=15,
                 )
             else:
                 result = model.generate(input=file, batch_size_s=300)
             # print(result)
             if isinstance(result, list):
-                results[str(file)] = "".join([item["text"] for item in result])
+                results[str(file)] = "".join(
+                    [re.sub(r"<\|.*?\|>", "", item["text"]) for item in result]
+                )
             else:
                 results[str(file)] = result["text"]
     else:
