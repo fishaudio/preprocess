@@ -15,6 +15,7 @@ This repo contains some scripts for audio processing. Main features include:
 - [x] Audio transcribe (.lab)
 - [x] Audio transcribe via FunASR (use `--model-type funasr` to enable, detailed usage can be found at code)
 - [ ] Audio transcribe via WhisperX
+- [ ] Merge .lab files (example: `fap merge-lab ./dataset list.txt "{PATH}|spkname|JP|{TEXT}"`)
 
 ([ ] indicates not completed, [x] indicates completed)
 

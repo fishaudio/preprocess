@@ -33,7 +33,7 @@ def replace_lastest(string, old, new):
 @click.option(
     "--model-size",
     # whisper 默认 medium, funasr 默认 paraformer-zh
-    help="asr model size(default medium for whisper, paraformer-zh for funasr)",
+    help="asr model size(default medium for whisper, iic/SenseVoiceSmall for funasr)",
     default="medium",
     show_default=True,
     type=str,
@@ -49,6 +49,18 @@ def replace_lastest(string, old, new):
     default="whisper",
     show_default=True,
 )
+@click.option(
+    "--compute-type",
+    help="compute type (whisper only), allowed: float16, float32, int8, int8_float16 default float16",
+    default="float16",
+    show_default=True,
+)
+@click.option(
+    "--batch-size",
+    help="batch size (whisper only), 1 for not batched model",
+    default="float16",
+    show_default=True,
+)
 def transcribe(
     input_dir: str,
     num_workers: int,
@@ -56,6 +68,8 @@ def transcribe(
     model_size: str,
     recursive: bool,
     model_type: ASRModelType,
+    compute_type: str,
+    batch_size: int,
 ):
     """
     Transcribe audio files in a directory.
@@ -69,8 +83,8 @@ def transcribe(
 
     # 如果是 funasr 且没有提供 model_size, 则默认为 paraformer-zh
     if model_type == "funasr" and "model_size" not in provided_options:
-        logger.info("Using paraformer-zh model for funasr as default")
-        model_size = "paraformer-zh"
+        logger.info("Using iic/SenseVoiceSmall model for funasr as default")
+        model_size = "iic/SenseVoiceSmall"
 
     if not torch.cuda.is_available():
         logger.warning(
@@ -101,6 +115,8 @@ def transcribe(
                     model_type=model_type,
                     lang=lang,
                     pos=len(tasks),
+                    compute_type=compute_type,
+                    batch_size=batch_size,
                 )
             )
         results = {}

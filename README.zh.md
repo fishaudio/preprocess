@@ -15,6 +15,7 @@
 - [x] 音频打标 (.lab)
 - [x] 音频打标 FunASR（使用 `--model-type funasr` 开启, 详细使用方法可查看代码）
 - [ ] 音频打标 WhisperX
+- [ ] .lab 标注合并为 .list 文件 (示例: `fap merge-lab ./dataset list.txt "{PATH}|spkname|JP|{TEXT}"`)
 
 ([ ] 表示未完成, [x] 表示已完成)
 
