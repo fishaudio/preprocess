@@ -8,7 +8,15 @@ from loguru import logger
 from tqdm import tqdm
 
 from fish_audio_preprocess.utils.file import AUDIO_EXTENSIONS, list_files
+import torchaudio
 
+backends = torchaudio.list_audio_backends()
+if "sox" in backends:
+    backend = "sox"
+elif "ffmpeg" in backends:
+    backends = "ffmpeg"
+else:
+    backend = "soundfile"
 
 def process_one(file, input_dir):
     import soundfile as sf
@@ -28,10 +36,9 @@ def process_one(file, input_dir):
 
 
 def process_one_accurate(file, input_dir):
-    import torchaudio
-
+    
     try:
-        y, sr = torchaudio.load(str(file), backend="sox")
+        y, sr = torchaudio.load(str(file), backend=backend)
         return y.size(-1), sr, y.size(-1) / sr, file.relative_to(input_dir)
     except Exception as e:
         logger.warning(f"Error reading {file}: {e}")
