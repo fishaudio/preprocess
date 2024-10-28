@@ -74,7 +74,7 @@ def to_wav(
             skipped += 1
             continue
 
-        command = ["ffmpeg", "-nostats", "-loglevel", "error", "-i", str(file)]
+        command = ["ffmpeg", "-y", "-nostats", "-loglevel", "error", "-i", str(file)]
 
         if segment > 0:
             command.extend(["-f", "segment", "-segment_time", str(segment)])
