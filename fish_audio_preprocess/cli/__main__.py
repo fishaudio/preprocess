@@ -2,6 +2,8 @@ import click
 import richuru
 from loguru import logger
 
+from fish_audio_preprocess.cli.merge_lab import merge_lab
+
 from .convert_to_wav import to_wav
 from .frequency import frequency
 from .length import length
@@ -35,6 +37,7 @@ cli.add_command(slice_audio_v2)
 cli.add_command(resample)
 cli.add_command(transcribe)
 cli.add_command(merge_short)
+cli.add_command(merge_lab)
 
 
 if __name__ == "__main__":

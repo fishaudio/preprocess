@@ -3,16 +3,18 @@ authors = [
   {name = "Lengyue", email = "lengyue@lengyue.me"},
 ]
 dependencies = [
-    "tqdm>=4.64.1",
-    "demucs>=4.0.0",
-    "loguru>=0.6.0",
-    "pyloudnorm>=0.1.1",
-    "matplotlib>=3.6.2",
-    "librosa>=0.9.0",
-    "richuru>=0.1.1",
-    "praat-parselmouth>=0.4.3",
-    "click>=8.0.0",
-    "openai-whisper",
+  "tqdm>=4.64.1",
+  "demucs>=4.0.0",
+  "loguru>=0.6.0",
+  "pyloudnorm>=0.1.1",
+  "matplotlib>=3.6.2",
+  "librosa>=0.9.0",
+  "richuru>=0.1.1",
+  "praat-parselmouth>=0.4.3",
+  "click>=8.0.0",
+  "faster-whisper @ git+https://github.com/SYSTRAN/faster-whisper",
+  "funasr",
+  "modelscope",
 ]
 description = "Preprocess audio data"
 license = {text = "Apache"}
@@ -25,8 +27,8 @@ version = "0.2.8"
 fap = "fish_audio_preprocess.cli.__main__:cli"
 
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
+requires = ["setuptools", "setuptools-scm"]
 
 [tool.setuptools]
 packages = ["fish_audio_preprocess"]

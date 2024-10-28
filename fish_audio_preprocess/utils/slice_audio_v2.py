@@ -221,9 +221,11 @@ def slice_audio_v2(
 
     if len(audio) / rate < min_duration:
         sliced_by_max_duration_chunk = slice_by_max_duration(audio, max_duration, rate)
-        yield from merge_short_chunks(
-            sliced_by_max_duration_chunk, max_duration, rate
-        ) if merge_short else sliced_by_max_duration_chunk
+        yield from (
+            merge_short_chunks(sliced_by_max_duration_chunk, max_duration, rate)
+            if merge_short
+            else sliced_by_max_duration_chunk
+        )
         return
 
     slicer = Slicer(

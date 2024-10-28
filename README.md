@@ -13,7 +13,9 @@ This repo contains some scripts for audio processing. Main features include:
 - [x] Audio data statistics (supports determining audio length)
 - [x] Audio resampling
 - [x] Audio transcribe (.lab)
+- [x] Audio transcribe via FunASR (use `--model-type funasr` to enable, detailed usage can be found at code)
 - [ ] Audio transcribe via WhisperX
+- [ ] Merge .lab files (example: `fap merge-lab ./dataset list.txt "{PATH}|spkname|JP|{TEXT}"`)
 
 ([ ] indicates not completed, [x] indicates completed)
 
@@ -22,11 +24,10 @@ This repo contains some scripts for audio processing. Main features include:
 ## Getting Started:
 
 ```
-pip install -e . 
+pip install -e .
 fap --help
 ```
 
 ## Reference
 
 - [Batch Whisper](https://github.com/Blair-Johnson/batch-whisper)
-
