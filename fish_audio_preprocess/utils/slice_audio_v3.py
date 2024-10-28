@@ -3,15 +3,16 @@
 from pathlib import Path
 from typing import Iterable, Union
 
-import torch
-import torchaudio
 import librosa
 import numpy as np
 import soundfile as sf
+import torch
+import torchaudio
+from silero_vad import get_speech_timestamps, load_silero_vad
 
 from fish_audio_preprocess.utils.slice_audio import slice_by_max_duration
 from fish_audio_preprocess.utils.slice_audio_v2 import merge_short_chunks
-from silero_vad import get_speech_timestamps, load_silero_vad
+
 
 def slice_audio_v3(
     audio: np.ndarray,
@@ -54,9 +55,7 @@ def slice_audio_v3(
 
     sr = 16000
     if sr != rate:
-        transform = torchaudio.transforms.Resample(
-            orig_freq=rate, new_freq=16000
-        )
+        transform = torchaudio.transforms.Resample(orig_freq=rate, new_freq=16000)
         wav = transform(wav)
 
     speech_timestamps = get_speech_timestamps(
