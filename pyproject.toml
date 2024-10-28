@@ -12,7 +12,7 @@ dependencies = [
   "richuru>=0.1.1",
   "praat-parselmouth>=0.4.3",
   "click>=8.0.0",
-  "faster-whisper @ git+https://github.com/SYSTRAN/faster-whisper",
+  "faster-whisper",
   "funasr",
   "modelscope",
 ]

@@ -74,7 +74,7 @@ def to_wav(
             skipped += 1
             continue
 
-        command = ["ffmpeg", "-i", str(file)]
+        command = ["ffmpeg", "-nostats", "-loglevel", "error", "-i", str(file)]
 
         if segment > 0:
             command.extend(["-f", "segment", "-segment_time", str(segment)])
@@ -82,9 +82,7 @@ def to_wav(
         command.append(str(new_file))
 
         sp.check_call(
-            command,
-            stdout=sp.DEVNULL,
-            stderr=sp.DEVNULL,
+            command
         )
 
     logger.info("Done!")
