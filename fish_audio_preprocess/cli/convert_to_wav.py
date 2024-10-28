@@ -81,9 +81,7 @@ def to_wav(
 
         command.append(str(new_file))
 
-        sp.check_call(
-            command
-        )
+        sp.check_call(command)
 
     logger.info("Done!")
     logger.info(f"Total: {len(files)}, Skipped: {skipped}")
