@@ -42,4 +42,4 @@ cli.add_command(merge_lab)
 
 
 if __name__ == "__main__":
-    to_wav()
+    cli()
