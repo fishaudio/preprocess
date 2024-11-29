@@ -59,7 +59,7 @@ def batch_transcribe(
         model = AutoModel(
             model=model_size,
             vad_model="fsmn-vad",
-            punc_model="ct-punc" if model_size == "paraformer-zh" else None,
+            punc_model="ct-punc",
             log_level="ERROR",
             disable_pbar=True,
         )
@@ -77,8 +77,8 @@ def batch_transcribe(
             # print(result)
             if isinstance(result, list):
                 results[str(file)] = "".join(
-                    [re.sub(r"<\|.*?\|>", "", item["text"]) for item in result]
-                )
+                    [re.sub(r"< \|.*?\| >", "", item["text"]) for item in result]
+                ).strip()
             else:
                 results[str(file)] = result["text"]
     else:
