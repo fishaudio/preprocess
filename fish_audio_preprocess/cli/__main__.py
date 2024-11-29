@@ -11,7 +11,7 @@ from .loudness_norm import loudness_norm
 from .merge_short import merge_short
 from .resample import resample
 from .separate_audio import separate
-from .slice_audio import slice_audio, slice_audio_v2
+from .slice_audio import slice_audio, slice_audio_v2, slice_audio_v3
 from .transcribe import transcribe
 
 
@@ -34,6 +34,7 @@ cli.add_command(separate)
 cli.add_command(loudness_norm)
 cli.add_command(slice_audio)
 cli.add_command(slice_audio_v2)
+cli.add_command(slice_audio_v3)
 cli.add_command(resample)
 cli.add_command(transcribe)
 cli.add_command(merge_short)
@@ -41,4 +42,4 @@ cli.add_command(merge_lab)
 
 
 if __name__ == "__main__":
-    to_wav()
+    cli()

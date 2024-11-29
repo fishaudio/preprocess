@@ -74,18 +74,14 @@ def to_wav(
             skipped += 1
             continue
 
-        command = ["ffmpeg", "-i", str(file)]
+        command = ["ffmpeg", "-y", "-nostats", "-loglevel", "error", "-i", str(file)]
 
         if segment > 0:
             command.extend(["-f", "segment", "-segment_time", str(segment)])
 
         command.append(str(new_file))
 
-        sp.check_call(
-            command,
-            stdout=sp.DEVNULL,
-            stderr=sp.DEVNULL,
-        )
+        sp.check_call(command)
 
     logger.info("Done!")
     logger.info(f"Total: {len(files)}, Skipped: {skipped}")
